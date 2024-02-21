@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Sinh viên</title>
+
+  <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+
+
+</head>
+<body>
+
+  <h1>Quản lý Sinh viên</h1>
+
+  <label for="quantity">Nhập mã sinh viên:</label>
+  <input type="number" id="quantity">
+  <button onclick="createStudentList()">Nhập</button>
+
+  <h2>Danh sách sinh viên</h2>
+  <table id="studentTable">
+    <thead>
+      <tr>
+        <th>Mã SV</th>
+        <th>Họ và tên</th>
+        <th>Ngày sinh</th>
+        <th>Lớp</th>
+        <th>GPA</th>
+        <th>Chỉnh sửa</th>
+      </tr>
+    </thead>
+    <tbody id="studentList"></tbody>
+  </table>
+
+  <script>
+    let studentList = [];
+
+    function createStudentList() {
+      const quantityInput = document.getElementById('quantity');
+      const quantity = parseInt(quantityInput.value);
+
+      for (let i = 0; i < quantity; i++) {
+        const student = {
+          id: i + 1,
+          name: '',
+          dob: '',
+          class: '',
+          gpa: 0.0
+        };
+        studentList.push(student);
+      }
+
+      alert('Danh sách sinh viên đã được tạo!');
+      displayStudentInfo();
+    }
+
+    function updateStudentInfo(id) {
+      const student = studentList.find(s => s.id === id);
+
+      student.name = prompt('Nhập họ và tên của sinh viên:', student.name);
+      student.dob = prompt('Nhập ngày tháng năm sinh của sinh viên:', student.dob);
+      student.class = prompt('Nhập lớp học của sinh viên:', student.class);
+      student.gpa = parseFloat(prompt('Nhập điểm GPA của sinh viên:', student.gpa));
+
+      alert('Thông tin sinh viên đã được cập nhật!');
+      displayStudentInfo();
+    }
+
+    function displayStudentInfo() {
+      const studentListContainer = document.getElementById('studentList');
+      studentListContainer.innerHTML = '';
+
+      studentList.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.id}</td>
+          <td contenteditable="true" oninput="updateInfo(${student.id}, 'name', this)">${student.name}</td>
+          <td contenteditable="true" oninput="updateInfo(${student.id}, 'dob', this)">${student.dob}</td>
+          <td contenteditable="true" oninput="updateInfo(${student.id}, 'class', this)">${student.class}</td>
+          <td contenteditable="true" oninput="updateInfo(${student.id}, 'gpa', this)">${student.gpa}</td>
+          <td><button onclick="updateStudentInfo(${student.id})">Cập nhật</button></td>
+        `;
+        studentListContainer.appendChild(row);
+      });
+    }
+
+    function updateInfo(id, field, element) {
+      const student = studentList.find(s => s.id === id);
+      student[field] = element.innerText;
+    }
+  </script>
+
+</body>
+</html>
